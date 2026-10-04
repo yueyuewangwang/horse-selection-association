@@ -1,0 +1,20 @@
+module	script	purpose	main_inputs	main_outputs
+00_snp_filter	run_qc.sh	Sample/site QC, final exclusion, LD pruning, PCA	RAW_VCF, exclusion lists	QC_ROOT
+00_snp_filter	prepare_selection_vcf.sh	Export, sort, phase, and MAF-filter selection VCF	QC PLINK files, Beagle	selection VCF
+00_snp_filter	remove_mule.txt	Documented exceptional-sample exclusion list	Sample IDs	Used by run_qc.sh
+00_snp_filter	remove_sample_for_analysis.txt	Post-PCA sample exclusion list	Sample IDs	Used by run_qc.sh
+01_population_structure	run_pca.sh	LD-pruned PCA	Autosomal PLINK prefix	PCA eigenvectors/eigenvalues
+01_population_structure	run_distance_tree.sh	VCF2Dis distance matrix and FastME BIONJ tree	Structure VCF	p_distance.mat, population_tree.nwk
+01_population_structure	prepare_admixture_markers.sh	Compact autosomal marker set	Structure PLINK prefix	ADMIXTURE PLINK prefix
+01_population_structure	run_admixture.sh	K-model ancestry estimation and CV	ADMIXTURE PLINK prefix	Q/P files and CV summary
+02_selection_scan	run_selection_scans.sh	Windowed weighted FST and pi	Selection VCF, group manifest	Raw scan files
+02_selection_scan	build_candidate_regions.py	ZFst/pi joint tails, merged regions, GFF3 genes	Raw scans, GFF3	candidate_regions.tsv
+03_association	run_association_pipeline.sh	Autosomal rMVP MLM GWAS	GWAS manifest, genotypes, phenotypes	MLM tables and lead_loci.tsv
+04_annotation	run_vep_annotation.sh	Offline VEP variant annotation	BIM, FASTA, VEP cache	Annotated VCF
+04_annotation	annotate_candidates.py	GWAS/selection physical integration	Leads, regions, GFF3	Candidate annotation table
+05_robustness	compute_allele_frequency.py	Stratified declared-allele frequencies	PLINK, bins, lead table	Frequency table
+05_robustness	audit_effect_alleles.py	Check dosage/allele orientation	BIM, lead table	Orientation audit
+05_robustness	phase_haplotype_regions.sh	Extract and phase declared regions	VCF, region manifest, Beagle	Phased region VCFs
+05_robustness	summarize_haplotypes.py	Summarise phased region records	Phased VCFs, region manifest	Haplotype summary
+05_robustness	run_candidate_association_sensitivity.R	Candidate-level PC sensitivity	Dosage, phenotype, PC, metadata	Sensitivity table
+05_robustness	run_selection_robustness.sh	Scenario selection robustness	VCF, scenario manifest	Scenario FST/pi files

@@ -1,0 +1,11 @@
+config/config.env
+work/
+results/
+*.log
+*.tmp
+__pycache__/
+*.py[cod]
+.Rhistory
+.RData
+.Ruserdata
+.DS_Store
